@@ -86,6 +86,9 @@ def get_enum_core_schema(enum_type: type[Enum], config: ConfigDict) -> CoreSchem
     if cases:
 
         def get_json_schema(schema: CoreSchema, handler: GetJsonSchemaHandler) -> JsonSchemaValue:
+            if schema['sub_type'] == 'int':
+                enum_names = [x.name for x in cases]
+                js_updates.update(**{'x-enumNames': enum_names, 'x-enum-varnames': enum_names})
             json_schema = handler(schema)
             original_schema = handler.resolve_ref_schema(json_schema)
             original_schema.update(js_updates)
